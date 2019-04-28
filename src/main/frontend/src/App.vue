@@ -11,21 +11,39 @@
       <meetings-page :username="authenticatedUsername"></meetings-page>
     </div>
     <div v-else>
-      <login-form @login="login($event)"></login-form>
+    
+      <button @click="registering = false">Zaloguj sie </button>
+      <button @click="registering = true">zarejestruj sie </button>
+      
+      <login-form @login="login($event)"
+      v-if="!registering"></login-form>
+      
+      <login-form @login="register($event)"
+      button-label="zarejestruj sie"
+      v-else></login-form>
+      
+  
+      
     </div>
   </div>
 </template>
 
+
 <script>
     import "milligram";
     import LoginForm from "./LoginForm";
+   // import RegisterForm from "./RegisterForm";
     import MeetingsPage from "./meetings/MeetingsPage";
+    import VueResource from "vue-resource";
+    
+    import Vue from 'vue'
 
     export default {
         components: {LoginForm, MeetingsPage},
         data() {
             return {
-                authenticatedUsername: ""
+                authenticatedUsername: "",
+                registering: false
             };
         },
         methods: {
@@ -34,7 +52,16 @@
             },
             logout() {
                 this.authenticatedUsername = '';
-            }
+            },
+    		register(user) {
+       		 this.$http.post('participants', user)
+       		     .then(response => {
+       		         // uda³o siê
+       		     })
+       		     .catch(response => {
+       		         // nie uda³o sie     
+       		     });
+       		}
         }
     };
 </script>
