@@ -30,8 +30,15 @@
             };
         },
         methods: {
+        
             addNewMeeting(meeting) {
-                this.meetings.push(meeting);
+        	    this.$http.post('meetings', meeting)
+               
+            },
+            getMeetings() {
+        	    this.$http.get('meetings')
+        	    
+               
             },
             addMeetingParticipant(meeting) {
                 meeting.participants.push(this.username);
@@ -45,3 +52,15 @@
         }
     }
 </script>
+
+
+
+register(user) {
+                this.clearMessage();
+                this.$http.post('participants', user)
+                    .then(() => {
+                        this.success('Konto zostało założone. Możesz się zalogować.');
+                        this.registering = false;
+                    })
+                    .catch(response => this.failure('Błąd przy zakładaniu konta. Kod odpowiedzi: ' + response.status));
+            },
