@@ -10,7 +10,7 @@
     </h3>
 
     <meetings-list :meetings="meetings"
-                   :username="username"
+                   :username="this.username"
                    @attend="addMeetingParticipant($event)"
                    @unattend="removeMeetingParticipant($event)"
                    @delete="deleteMeeting($event)"></meetings-list>
@@ -20,7 +20,6 @@
 <script>
     import NewMeetingForm from "./NewMeetingForm";
     import MeetingsList from "./MeetingsList";
-
     export default {
         components: {NewMeetingForm, MeetingsList},
         props: ['username'],
@@ -30,17 +29,16 @@
             };
         },
         methods: {
-        
             addNewMeeting(meeting) {
-        	    this.$http.post('meetings', meeting)
-               
+                this.$http.post('meetings', meeting)
+                    .then(response => {
+                        this.meetings.push(response.body);
+                    });
+                this.getMeetings();
             },
-            getMeetings() {
-        	    this.$http.get('meetings')
-        	    
-               
-            },
+            
             addMeetingParticipant(meeting) {
+               
                 meeting.participants.push(this.username);
             },
             removeMeetingParticipant(meeting) {
@@ -48,19 +46,18 @@
             },
             deleteMeeting(meeting) {
                 this.meetings.splice(this.meetings.indexOf(meeting), 1);
+                this.$http.delete('meetings/' + meeting.id)
+                
+            },          
+            getMeetings() {
+                this.$http.get('meetings')
+                    .then(response => {
+                        this.meetings = response.body;
+                    })
             }
-        }
+        },
+        mounted() {
+            this.$nextTick(this.getMeetings());
+        },
     }
 </script>
-
-
-
-register(user) {
-                this.clearMessage();
-                this.$http.post('participants', user)
-                    .then(() => {
-                        this.success('Konto zostało założone. Możesz się zalogować.');
-                        this.registering = false;
-                    })
-                    .catch(response => this.failure('Błąd przy zakładaniu konta. Kod odpowiedzi: ' + response.status));
-            },
