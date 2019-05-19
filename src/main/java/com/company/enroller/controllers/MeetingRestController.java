@@ -66,10 +66,10 @@ public class MeetingRestController {
 
 	
 	@RequestMapping(value = "{id}/participants", method = RequestMethod.POST)
-	public ResponseEntity<?> addParticipant(@PathVariable("id") long id, @RequestBody Map<String, String> json) {
+	public ResponseEntity<?> addParticipant(@PathVariable("id") long id, @RequestBody String l) {
 
 		Meeting currentMeeting = meetingService.findById(id);
-		String login = json.get("login");
+		String login = l;
 		if (login == null) {
 			return new ResponseEntity<String>("Unable to find participant login in the request body",
 					HttpStatus.BAD_REQUEST);

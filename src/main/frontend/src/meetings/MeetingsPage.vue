@@ -38,15 +38,24 @@
             },
             
             addMeetingParticipant(meeting) {
-               
+                this.$http.post('meetings/' + meeting.id + '/participants/', this.username).then(response => {
+                        this.meetings = response.body;
+                    })
                 meeting.participants.push(this.username);
+                 
+                 this.getMeetings();
             },
             removeMeetingParticipant(meeting) {
+            this.$http.delete('meetings/' + meeting.id + '/participants/' + this.username).then(response => {
+            this.meetings = response.body;
+                    })
                 meeting.participants.splice(meeting.participants.indexOf(this.username), 1);
+            this.getMeetings();
             },
             deleteMeeting(meeting) {
                 this.meetings.splice(this.meetings.indexOf(meeting), 1);
-                this.$http.delete('meetings/' + meeting.id)
+                this.$http.delete('meetings/' + meeting.id);
+                this.getMeetings();
                 
             },          
             getMeetings() {
@@ -54,10 +63,18 @@
                     .then(response => {
                         this.meetings = response.body;
                     })
+            },
+            getParticipants(meeting) {
+                this.$http.get('meetings/' + meeting.id + '/participants')
+                    .then(response => {
+                        this.meetings = response.body;
+                    })
             }
         },
         mounted() {
             this.$nextTick(this.getMeetings());
+            
+          
         },
     }
 </script>
